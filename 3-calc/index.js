@@ -1,6 +1,4 @@
-const firstNum = process.argv[2]
-const secondNum = process.argv[3]
-const inputOperation = process.argv[4]
+const [firstNum, secondNum, inputOperation] = process.argv.slice(2)
 
 try {
   const currentOperation = require(`./${inputOperation}`)
