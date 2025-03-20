@@ -31,13 +31,13 @@ const workerFunc = (arr) => {
     const chunks = generateArrayChunks(arr, 8)
 
     const workers = chunks.map((chunk) => {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolveWorker, rejectWorker) => {
         const worker = new Worker('./worker.js', {
           workerData: { chunk },
         })
 
-        worker.on('message', (msg) => resolve(msg))
-        worker.on('error', (msg) => reject(msg))
+        worker.on('message', (msg) => resolveWorker(msg))
+        worker.on('error', (msg) => rejectWorker(msg))
         worker.on('exit', (code) => {
           if (code !== 0)
             rejectWorker(new Error(`Worker stopped with exit code ${code}`))
