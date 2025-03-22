@@ -22,6 +22,7 @@ const getFullTimeSeconds = () => {
 
 const timerId = setTimeout(() => {
   console.log('Shutdown timer')
+
   sentNot('end', timeArr)
 }, getFullTimeSeconds() * 1000)
 
@@ -34,5 +35,6 @@ if (timeArr.length > 0) {
 if (timeArr.length === 0) {
   clearTimeout(timerId)
   console.log('Set the timer to format: 0h 0m 0s')
+
   sentNot('incorrect')
 }
