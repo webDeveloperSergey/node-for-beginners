@@ -1,40 +1,27 @@
-const sentNot = require('./sentNot')
+const sentNot = require('./common/sentNot')
+const getFullTimeSeconds = require('./common/getFullTimeSeconds')
 
-const timeArr = process.argv.slice(2)
+const main = () => {
+  const timeArr = process.argv.slice(2)
 
-const getFullTimeSeconds = () => {
-  let fullTimeSeconds = 0
-  const convertTimeMap = {
-    h: 3600,
-    m: 60,
-    s: 1,
+  const timerId = setTimeout(() => {
+    console.log('Shutdown timer')
+
+    sentNot('end', timeArr)
+  }, getFullTimeSeconds(timeArr) * 1000)
+
+  if (timeArr.length > 0) {
+    setImmediate(() => {
+      console.log(`The timer has started and is set to ${timeArr.join(' ')}`)
+    })
   }
 
-  timeArr.forEach((time) => {
-    const timeChar = time[time.length - 1]
-    const timerCount = time.match(/\d+/g)[0]
+  if (timeArr.length === 0) {
+    clearTimeout(timerId)
+    console.log('Set the timer to format: 0h 0m 0s')
 
-    fullTimeSeconds += Number(timerCount) * convertTimeMap[timeChar]
-  })
-
-  return fullTimeSeconds
+    sentNot('incorrect')
+  }
 }
 
-const timerId = setTimeout(() => {
-  console.log('Shutdown timer')
-
-  sentNot('end', timeArr)
-}, getFullTimeSeconds() * 1000)
-
-if (timeArr.length > 0) {
-  setImmediate(() => {
-    console.log(`The timer has started and is set to ${timeArr.join(' ')}`)
-  })
-}
-
-if (timeArr.length === 0) {
-  clearTimeout(timerId)
-  console.log('Set the timer to format: 0h 0m 0s')
-
-  sentNot('incorrect')
-}
+main()
