@@ -42,10 +42,23 @@ const saveCity = async (city) => {
   }
 }
 
+const saveLanguage = async (language) => {
+  if (!language.length) {
+    printError('Не передан язык')
+    return
+  }
+
+  try {
+    await saveKeyValue(TOKEN_DICTIONARY.lang, language)
+    printSuccess('Язык сохранен')
+  } catch (e) {
+    printError(e.message)
+  }
+}
+
 const getForecast = async () => {
   try {
-    const city = process.env.CITY ?? (await getKeyValue(TOKEN_DICTIONARY.city))
-    const weather = await getWeather(city)
+    const weather = await getWeather()
     printWeather(weather, weather.weather[0].icon)
   } catch (e) {
     if (e?.response?.status === 404) {
@@ -61,19 +74,15 @@ const getForecast = async () => {
 const initCLI = () => {
   const args = getArgs(process.argv)
 
-  const { h, s, t } = args
+  const { h: help, s: city, t: token, l: language } = args
 
-  if (h) {
-    return printHelp()
-  }
+  if (help) printHelp()
 
-  if (s) {
-    return saveCity(s)
-  }
+  if (city) saveCity(city)
 
-  if (t) {
-    return saveToken(t)
-  }
+  if (token) saveToken(token)
+
+  if (language) saveLanguage(language)
 
   getForecast()
 }
