@@ -33,6 +33,22 @@ const getKeyValue = async (key) => {
   return undefined
 }
 
+const delKeyValue = async (key) => {
+  if (await isExist(filePath)) {
+    const file = await promises.readFile(filePath)
+    const data = JSON.parse(file)
+
+    if (!data[key])
+      throw new Error('Такого параметра не существует для удаления')
+
+    delete data[key]
+
+    await promises.writeFile(filePath, JSON.stringify(data))
+  }
+
+  return undefined
+}
+
 const isExist = async (path) => {
   try {
     await promises.stat(path)
@@ -42,4 +58,4 @@ const isExist = async (path) => {
   }
 }
 
-export { saveKeyValue, getKeyValue, TOKEN_DICTIONARY }
+export { saveKeyValue, getKeyValue, delKeyValue, TOKEN_DICTIONARY }

@@ -18,5 +18,5 @@ export const getArgs = (args) => {
     }
   })
 
-  return { ...res, s: citiesArr }
+  return { ...res, ...(citiesArr.length && { s: citiesArr }) }
 }

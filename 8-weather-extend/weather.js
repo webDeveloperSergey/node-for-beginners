@@ -9,8 +9,9 @@ import {
   printWeather,
 } from './services/log.service.js'
 import {
-  getKeyValue,
+  delKeyValue,
   saveKeyValue,
+  getKeyValue,
   TOKEN_DICTIONARY,
 } from './services/storage.service.js'
 
@@ -56,6 +57,20 @@ const saveLanguage = async (language) => {
   }
 }
 
+const delKey = async (key) => {
+  if (!key.length) {
+    printError('Не передан ключ для удаления')
+    return
+  }
+
+  try {
+    await delKeyValue(key)
+    printSuccess(`Параметр ${key} удален`)
+  } catch (e) {
+    printError(e.message)
+  }
+}
+
 const getForecast = async () => {
   try {
     const weathers = await getWeather()
@@ -76,7 +91,7 @@ const getForecast = async () => {
 const initCLI = () => {
   const args = getArgs(process.argv)
 
-  const { h: help, s: cities, t: token, l: language } = args
+  const { h: help, s: cities, t: token, l: language, d: del } = args
 
   if (help) printHelp()
 
@@ -85,6 +100,8 @@ const initCLI = () => {
   if (token) saveToken(token)
 
   if (language) saveLanguage(language)
+
+  if (del) delKey(del)
 
   getForecast()
 }
