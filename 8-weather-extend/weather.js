@@ -28,14 +28,14 @@ const saveToken = async (token) => {
   }
 }
 
-const saveCity = async (city) => {
-  if (!city.length) {
+const saveCities = async (cities) => {
+  if (!cities.length) {
     printError('Не передан город')
     return
   }
 
   try {
-    await saveKeyValue(TOKEN_DICTIONARY.city, city)
+    await saveKeyValue(TOKEN_DICTIONARY.cities, cities)
     printSuccess('Город сохранен')
   } catch (e) {
     printError(e.message)
@@ -58,8 +58,10 @@ const saveLanguage = async (language) => {
 
 const getForecast = async () => {
   try {
-    const weather = await getWeather()
-    printWeather(weather, weather.weather[0].icon)
+    const weathers = await getWeather()
+    weathers.forEach((weather) =>
+      printWeather(weather, weather.weather[0].icon)
+    )
   } catch (e) {
     if (e?.response?.status === 404) {
       printError('Неверно указан город')
@@ -74,11 +76,11 @@ const getForecast = async () => {
 const initCLI = () => {
   const args = getArgs(process.argv)
 
-  const { h: help, s: city, t: token, l: language } = args
+  const { h: help, s: cities, t: token, l: language } = args
 
   if (help) printHelp()
 
-  if (city) saveCity(city)
+  if (cities) saveCities(cities)
 
   if (token) saveToken(token)
 

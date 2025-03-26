@@ -6,7 +6,7 @@ const filePath = join(homedir(), 'weather-data.json')
 
 const TOKEN_DICTIONARY = {
   token: 'token',
-  city: 'city',
+  cities: 'cities',
   lang: 'language',
   defaultLang: 'ru',
 }

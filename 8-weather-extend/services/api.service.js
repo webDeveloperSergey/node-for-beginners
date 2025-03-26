@@ -3,7 +3,7 @@ import { getKeyValue, TOKEN_DICTIONARY } from './storage.service.js'
 
 const getWeather = async () => {
   const token = process.env.TOKEN ?? (await getKeyValue(TOKEN_DICTIONARY.token))
-  const city = process.env.CITY ?? (await getKeyValue(TOKEN_DICTIONARY.city))
+  const cities = await getKeyValue(TOKEN_DICTIONARY.cities)
   const language =
     process.env.LANGUAGE ??
     (await getKeyValue(TOKEN_DICTIONARY.lang)) ??
@@ -13,19 +13,19 @@ const getWeather = async () => {
     throw new Error('Не задан ключ API. Задайте его через команду -t [API_KEY]')
   }
 
-  const { data } = await axios.get(
-    'https://api.openweathermap.org/data/2.5/weather',
-    {
+  const weatherPromise = cities.map((city) =>
+    axios.get('https://api.openweathermap.org/data/2.5/weather', {
       params: {
         q: city,
         appid: token,
         lang: language,
         units: 'metric',
       },
-    }
+    })
   )
 
-  return data
+  const responses = await Promise.all(weatherPromise)
+  return responses.map((res) => res.data)
 }
 
 export { getWeather }

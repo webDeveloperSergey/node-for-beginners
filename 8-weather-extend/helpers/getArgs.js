@@ -1,7 +1,10 @@
-export const getArgs = (args) => {
-  const argKeys = args.slice(2)
+import { getValuesAfterFlag } from './getValuesAfterFlag.js'
 
+export const getArgs = (args) => {
   const res = {}
+
+  const argKeys = args.slice(2)
+  const citiesArr = getValuesAfterFlag(argKeys, '-s')
 
   argKeys.forEach((value, index, array) => {
     if (value.charAt(0) == '-') {
@@ -15,5 +18,5 @@ export const getArgs = (args) => {
     }
   })
 
-  return res
+  return { ...res, s: citiesArr }
 }
